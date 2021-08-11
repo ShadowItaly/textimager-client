@@ -2,6 +2,7 @@ package org.hucompute.textimager.client.rest.ducc;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.StringWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -318,6 +319,8 @@ public class DUCCAPI {
 			)
 	public JSONObject analyse(@ApiParam(hidden=true)Request request) throws XPathExpressionException, NullPointerException, UIMAException, JAXBException, IOException, SAXException, ParserConfigurationException{
 		Properties prop = getJobProperties();
+    System.out.println("How are you???");
+    System.exit(0);
 
 		String inputFormat = request.queryParams("inputFormat");
 		String language = request.queryParams("language");
@@ -544,6 +547,13 @@ public class DUCCAPI {
 
 		System.out.println(prop);
 		prop.entrySet().stream().map(x->x.getKey()+"\t"+x.getValue()).forEach(System.out::println);
+    
+    StringWriter writer_2 = new StringWriter();
+    prop.list(new PrintWriter(writer_2));
+    System.out.println(writer_2.getBuffer().toString());
+    System.out.println("Hello how are you>????");
+		System.exit(0);
+
 		//
 		long duccId = -1;
 		try {

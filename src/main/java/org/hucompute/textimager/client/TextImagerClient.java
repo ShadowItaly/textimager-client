@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -43,6 +44,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.CasCopier;
 import org.hucompute.textimager.client.TextImagerOptions.IOFormat;
+import org.apache.uima.fit.factory.AggregateBuilder;
 import org.hucompute.textimager.client.TextImagerOptions.Language;
 import org.hucompute.textimager.config.ConfigDataholder;
 import org.hucompute.textimager.config.ServiceDataholder;
@@ -265,6 +267,7 @@ public class TextImagerClient {
 				addAnalysisEngine(deployFile,casConsumer);
 			}
 
+			System.out.println(deployFile.getAbsolutePath());
 			// creating aggregate analysis engine
 			uimaAsEngine.deploy(deployFile.getAbsolutePath(), clientCtx);
 			//System.out.println(FileUtils.readFileToString(deployFile.getAbsoluteFile(),"UTF-8"));
@@ -762,5 +765,18 @@ public class TextImagerClient {
 		uimaAsEngine.stop();
 		return asyncListener.output;
 	}
+
+	public static void main(String []args) throws Exception {
+		TextImagerClient client = new TextImagerClient();
+		client.setConfigFile("src/main/resources/services.xml");
+		//client.process("Das ist ein Test. Das ist ein Test.", new String[]{"LanguageToolSegmenter", "ParagraphSplitter", "MarMoTLemma", "MarMoTTagger"});
+   	 	String []arr = new String[]{"LanguageToolSegmenter","ParagraphSplitter"};
+
+    	AggregateBuilder builder = new AggregateBuilder();
+    	builder.add(AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class));
+    	CollectionReader rd = TextImagerOptions.getReader(IOFormat.TXT,"test",Language.de);
+    	client.processCollection(rd,Language.de,arr,AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class));
+	}
+
 
 }
